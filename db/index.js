@@ -352,6 +352,20 @@ async function getAllTags() {
   } catch (error) {
     throw error;
   }
+};
+
+async function getTableLikes(userId) {
+  try {
+    const likedPosts = await client.query(`
+    SELECT * 
+    FROM karma_likes 
+    WHERE "userId" = $1
+  
+    `, [userId]);
+    return likedPosts;
+  } catch (error) {
+    throw error
+  }
 }
 
 module.exports = {  
@@ -370,5 +384,6 @@ module.exports = {
   createTags,
   getAllTags,
   createPostTag,
-  addTagsToPost
+  addTagsToPost,
+  getTableLikes,
 }

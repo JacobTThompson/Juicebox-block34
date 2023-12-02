@@ -2,6 +2,14 @@
 const express = require('express');
 const apiRouter = express.Router();
 
+const app = express();
+const path = require('path');
+
+app.use(express.static(path.join(__dirname, 'public')))
+app.get('/juicebox', (req, res) => {
+  res.sendFile(__dirname + '/views/index.html')
+})
+
 const jwt = require('jsonwebtoken');
 const { getUserById } = require('../db');
 const { JWT_SECRET } = process.env;
@@ -48,6 +56,11 @@ apiRouter.use((req, res, next) => {
   next();
 });
 
+// added error handling
+app.use((error, req, res, next) => {
+  res.send(error)
+});
+
 const usersRouter = require('./users');
 apiRouter.use('/users', usersRouter);
 
@@ -60,5 +73,7 @@ apiRouter.use('/tags', tagsRouter);
 apiRouter.use((error, req, res, next) => {
   res.send(error);
 });
+
+
 
 module.exports = apiRouter;

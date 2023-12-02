@@ -17,6 +17,7 @@ async function dropTables() {
 
     // have to make sure to drop in correct order
     await client.query(`
+      DROP TABLE IF EXISTS karma_likes;
       DROP TABLE IF EXISTS post_tags;
       DROP TABLE IF EXISTS tags;
       DROP TABLE IF EXISTS posts;
@@ -61,6 +62,13 @@ async function createTables() {
         "postId" INTEGER REFERENCES posts(id),
         "tagId" INTEGER REFERENCES tags(id),
         UNIQUE ("postId", "tagId")
+      );
+
+      CREATE TABLE karma_likes (
+        id SERIAL PRIMARY KEY,
+        liked BOOLEAN NOT NULL,
+        "userId" INTEGER REFERENCES users(id),
+        UNIQUE ("userId")
       );
     `);
 

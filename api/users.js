@@ -5,6 +5,7 @@ const {
   createUser,
   getAllUsers,
   getUserByUsername,
+  getTableLikes,
 } = require('../db');
 
 const jwt = require('jsonwebtoken');
@@ -62,8 +63,12 @@ usersRouter.post('/login', async (req, res, next) => {
 usersRouter.post('/register', async (req, res, next) => {
   const { username, password, name, location } = req.body;
 
+  console.log(username + "check username");
+
   try {
     const _user = await getUserByUsername(username);
+
+    console.log(_user + "Check _user");
   
     if (_user) {
       next({
@@ -77,7 +82,8 @@ usersRouter.post('/register', async (req, res, next) => {
       password,
       name,
       location,
-    });
+    } ); 
+    console.log(user);
 
     const token = jwt.sign({ 
       id: user.id, 
@@ -94,5 +100,15 @@ usersRouter.post('/register', async (req, res, next) => {
     next({ name, message });
   } 
 });
+
+usersRouter.get('/likes',  async (req, res, next) => {
+  try {
+    const userId = req.userId;
+   const resultLikedPost = await getTableLikes(userId);
+   res.send(resultLikedPost);
+  } catch (error) {
+    throw error
+  }
+})
 
 module.exports = usersRouter;
